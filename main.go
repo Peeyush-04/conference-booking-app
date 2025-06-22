@@ -11,12 +11,27 @@ func main() {
 	fmt.Printf("We have total of %d titckets and %d are available!\n", conference_tickets, remaining_tickets)
 	fmt.Printf("Get your tickets here to attend\n")
 
-	var user_name string
+	var first_name string
+	var last_name string
+	var email string
 	var user_tickets uint8
 
 	// User creds
-	user_name = "Tom"
-	user_tickets = 2
-	fmt.Printf("User %s booked %d tickets.\n", user_name, user_tickets)
+	fmt.Printf("\nFirst Name: ")
+	fmt.Scan(&first_name)
+	fmt.Printf("Last Name: ")
+	fmt.Scan(&last_name)
+	fmt.Printf("Email: ")
+	fmt.Scan(&email)
+	fmt.Printf("Booking Tickets: ")
+	fmt.Scan(&user_tickets)
+	fmt.Printf("\n")
 
+	if user_tickets > remaining_tickets {
+		fmt.Printf("Booking limit exceeded, only %d are currently available!\n", remaining_tickets)
+	} else {
+		fmt.Printf("User %s booked %d tickets.\n", first_name, user_tickets)
+		remaining_tickets -= user_tickets
+		fmt.Printf("Remaing Tickets: %d", remaining_tickets)
+	}
 }
