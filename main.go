@@ -11,7 +11,7 @@ func main() {
 	fmt.Printf("We have total of %d titckets and %d are available!\n", conference_tickets, remaining_tickets)
 	fmt.Printf("Get your tickets here to attend\n")
 
-	var bookings [50]string
+	var bookings []string
 	var first_name string
 	var last_name string
 	var email string
@@ -33,7 +33,7 @@ func main() {
 	} else {
 		fmt.Printf("User %s booked %d tickets.\n\n", first_name, user_tickets)
 		remaining_tickets -= user_tickets
-		bookings[0] = first_name + " " + last_name
+		bookings = append(bookings, first_name+" "+last_name)
 		fmt.Printf("Remaing Tickets: %d\n\n", remaining_tickets)
 		fmt.Printf("Thank you %s for booking %d tickets.\nYou will recieve the confirmantion email at %s", bookings[0], user_tickets, email)
 	}
