@@ -5,6 +5,33 @@ import (
 	"strings"
 )
 
+func booking_logic(
+	bookings *[]string,
+	index *uint8,
+	first_name *string,
+	last_name *string,
+	user_tickets *uint8,
+	remaining_tickets *uint8,
+	email *string,
+) bool {
+	full_name := *first_name + " " + *last_name
+	if *user_tickets > *remaining_tickets {
+		fmt.Printf("Booking limit exceeded, only %d are currently avaiable!\n", *remaining_tickets)
+		return true
+	} else {
+		fmt.Printf("%s has booked %d tickets.\n\n", *first_name, *user_tickets)
+		*remaining_tickets -= *user_tickets
+		*bookings = append(*bookings, full_name)
+		fmt.Printf("Remaining tickets: %d\n\n", *remaining_tickets)
+		fmt.Printf("Thank you %s for booking %d tickets.\nYou will receive the confirmation email at %s.\n", full_name, *user_tickets, *email)
+		if *remaining_tickets == 0 {
+			return false
+		}
+	}
+	*index += 1
+	return true
+}
+
 func main() {
 	conference_name := string("Go Conference")
 	const conference_tickets uint8 = 50 // conference limit
@@ -82,22 +109,17 @@ func main() {
 		}
 		fmt.Printf("\n")
 
-		// Booking Logic
-		if user_tickets > remaining_tickets {
-			fmt.Printf("Booking limit exceeded, only %d are currently available!\n", remaining_tickets)
+		if !booking_logic(
+			&bookings,
+			&index,
+			&first_name,
+			&last_name,
+			&user_tickets,
+			&remaining_tickets,
+			&email,
+		) {
 			break
-		} else {
-			fmt.Printf("User %s booked %d tickets.\n\n", first_name, user_tickets)
-			remaining_tickets -= user_tickets
-			bookings = append(bookings, first_name+" "+last_name)
-			fmt.Printf("Remaing Tickets: %d\n\n", remaining_tickets)
-			fmt.Printf("Thank you %s for booking %d tickets.\nYou will recieve the confirmantion email at %s\n", bookings[index], user_tickets, email)
-			if remaining_tickets == 0 {
-				break
-			}
 		}
-		index++
-		// End booking logic
 	}
 
 	// Printing Final Booking List
