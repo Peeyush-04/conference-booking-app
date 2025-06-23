@@ -69,7 +69,7 @@ func main() {
 		fmt.Scan(&user_tickets)
 
 		// valid user tickets check
-		valid_user_tickets := user_tickets <= remaining_tickets
+		valid_user_tickets := user_tickets > 0 && user_tickets <= remaining_tickets
 		for {
 			if !valid_user_tickets {
 				fmt.Printf("\n%d are invalid number of tickets.\nRemaining tickets: %d\nValue should range from 1 to %d", user_tickets, remaining_tickets, remaining_tickets)
