@@ -5,97 +5,95 @@ import (
 	"strings"
 )
 
+type User struct {
+	FirstName     string
+	LastName      string
+	Email         string
+	BookedTickets uint8
+}
+
 func main() {
-	conference_name := string("Go Conference")
-	const conference_tickets uint8 = 50 // conference limit
-	remaining_tickets := uint8(50)
+	conferenceName := "Go Conference"
+	const conferenceTickets uint8 = 50
+	remainingTickets := uint8(50)
 
 	// Welcome
-	fmt.Printf("Welcome to %v booking appilication\n", conference_name)
-	fmt.Printf("We have total of %d titckets and %d are available!\n", conference_tickets, remaining_tickets)
-	fmt.Printf("Get your tickets here to attend\n")
+	fmt.Printf("Welcome to the %v booking application\n", conferenceName)
+	fmt.Printf("We have a total of %d tickets and %d are available!\n", conferenceTickets, remainingTickets)
+	fmt.Println("Get your tickets here to attend!")
 
-	// input variables =>(values) default
-	var first_name string
-	var last_name string
-	var email string
-	var user_tickets uint8
+	// Input variables
+	var firstName, lastName, email string
+	var userTickets uint8
 
-	// data containers
+	// Booking storage (index → User)
 	index := uint8(0)
-	bookings := []string{}
+	bookings := make(map[uint8]User)
 
 	for {
-		// input name
-		fmt.Printf("\nFirst Name: ")
-		fmt.Scan(&first_name)
-		fmt.Printf("Last Name: ")
-		fmt.Scan(&last_name)
+		// Input name
+		fmt.Print("\nFirst Name: ")
+		fmt.Scan(&firstName)
+		fmt.Print("Last Name: ")
+		fmt.Scan(&lastName)
 
-		// valid name check
-		for {
-			if !(len(first_name) >= 2 && len(last_name) >= 2) {
-				fmt.Printf("\n%s %s is not a valid name.\nFirst name and Last name should be greater that equal to 2.\n", first_name, last_name)
-				// input valid name
-				fmt.Printf("\nFirst Name: ")
-				fmt.Scan(&first_name)
-				fmt.Printf("Last Name: ")
-				fmt.Scan(&last_name)
-			} else {
-				break // valid name found => exit
-			}
+		// Valid name check
+		for len(firstName) < 2 || len(lastName) < 2 {
+			fmt.Printf("\n%s %s is not a valid name.\nFirst and last names should be at least 2 characters long.\n", firstName, lastName)
+			fmt.Print("First Name: ")
+			fmt.Scan(&firstName)
+			fmt.Print("Last Name: ")
+			fmt.Scan(&lastName)
 		}
 
-		// input email
-		fmt.Printf("Email: ")
+		// Input email
+		fmt.Print("Email: ")
 		fmt.Scan(&email)
 
-		// valid email check
-		for {
-			if !(strings.Contains(email, "@gmail.com")) {
-				fmt.Printf("\n%s is not a valid email.\nUse @gmail.com at last.\n", email)
-				// input valid email
-				fmt.Printf("\nEmail: ")
-				fmt.Scan(&email)
-			} else {
-				break // valid email found => exit
-			}
+		// Valid email check
+		for !strings.HasSuffix(email, "@gmail.com") {
+			fmt.Printf("\n%s is not a valid email. Please use an @gmail.com email.\n", email)
+			fmt.Print("Email: ")
+			fmt.Scan(&email)
 		}
 
-		// input user booked tickets
-		fmt.Printf("Booking Tickets: ")
-		fmt.Scan(&user_tickets)
+		// Input booking
+		fmt.Print("Booking Tickets: ")
+		fmt.Scan(&userTickets)
 
-		// valid user tickets check
-		for {
-			if !(user_tickets > 0 && user_tickets <= remaining_tickets) {
-				fmt.Printf("\n%d are invalid number of tickets.\nRemaining tickets: %d\nValue should range from 1 to %d", user_tickets, remaining_tickets, remaining_tickets)
-				// input valid user tickets
-				fmt.Printf("\n\nBooking Tickets: ")
-				fmt.Scan(&user_tickets)
-			} else {
-				break
-			}
+		// Valid ticket count
+		for userTickets == 0 || userTickets > remainingTickets {
+			fmt.Printf("\n%d is an invalid number of tickets.\nRemaining: %d\nEnter a value between 1 and %d\n", userTickets, remainingTickets, remainingTickets)
+			fmt.Print("Booking Tickets: ")
+			fmt.Scan(&userTickets)
 		}
-		fmt.Printf("\n")
 
-		if !booking_logic(
-			&bookings,
-			&index,
-			&first_name,
-			&last_name,
-			&user_tickets,
-			&remaining_tickets,
-			&email,
-		) {
+		// Store booking
+		user := User{
+			FirstName:     firstName,
+			LastName:      lastName,
+			Email:         email,
+			BookedTickets: userTickets,
+		}
+		bookings[index] = user
+		index++
+		remainingTickets -= userTickets
+
+		// Confirmation
+		fmt.Printf("\nThank you %s %s for booking %d ticket(s). A confirmation email has been sent to %s.\n", user.FirstName, user.LastName, user.BookedTickets, user.Email)
+		fmt.Printf("Remaining Tickets: %d\n", remainingTickets)
+
+		// Break if sold out
+		if remainingTickets == 0 {
+			fmt.Println("\nAll tickets are sold out. Booking closed.")
 			break
 		}
 	}
 
-	// Printing Final Booking List
-	fmt.Printf("\nFinal Booking list:\n")
-	for i := uint8(0); i <= index; i++ {
-		fmt.Printf("%d. %s\n", i+1, bookings[i])
+	// Final list
+	fmt.Println("\nFinal Booking List:")
+	for i := uint8(0); i < index; i++ {
+		user := bookings[i]
+		fmt.Printf("%d. %s %s (%d tickets) - %s\n", i+1, user.FirstName, user.LastName, user.BookedTickets, user.Email)
 	}
-	fmt.Println("")
 }
