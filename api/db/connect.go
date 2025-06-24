@@ -13,7 +13,7 @@ import (
 
 func ConnectDB() *pgxpool.Pool {
 	// loading from .env
-	err := godotenv.Load()
+	err := godotenv.Load(".env") // this depends on current working directory
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
