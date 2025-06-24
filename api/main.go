@@ -2,6 +2,7 @@ package main
 
 import (
 	"booking-database/api/db"
+	"booking-database/api/handlers"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,7 +17,8 @@ func main() {
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Server is Alive!!")
 	})
-	// http.HandleFunc("/book", handlers.BookTicketHandler(dbPool))
+
+	http.HandleFunc("/book", handlers.BookTicketHandler(dbPool))
 
 	fmt.Println("Server running at http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
