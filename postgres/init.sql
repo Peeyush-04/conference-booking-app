@@ -1,3 +1,4 @@
+-- User Table
 create table if not exists users(
     id serial primary key,
     first_name text not null,
@@ -7,6 +8,7 @@ create table if not exists users(
     created_at timestamptz not null default now()
 );
 
+-- Conference Table
 create table if not exists conferences(
     id serial primary key,
     title text not null,
@@ -19,6 +21,7 @@ create table if not exists conferences(
     created_at timestamptz not null default now()
 );
 
+-- Booking Table
 create table if not exists bookings (
     id serial primary key,
     user_id int not null references users(id) on delete cascade,
@@ -27,6 +30,7 @@ create table if not exists bookings (
     booked_at timestamptz not null default now()
 );
 
+-- Ticket Table
 create table if not exists tickets (
     id serial primary key,
     booking_id int not null REFERENCES bookings(id) on delete CASCADE,
