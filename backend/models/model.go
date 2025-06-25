@@ -23,6 +23,7 @@ type Conference struct {
 	TotalTickets     uint32    `json:"total_tickets"`
 	AvailableTickets uint32    `json:"available_tickets"`
 	OrganizerID      uint32    `json:"organizer_id"`
+	Status           string    `json:"status"`
 	CreatedAt        time.Time `json:"created_at"`
 }
 
@@ -32,6 +33,7 @@ type Booking struct {
 	UserID        uint32    `json:"user_id"`
 	ConferenceID  uint32    `json:"conference_id"`
 	TicketsBooked uint32    `json:"tickets_booked"`
+	Status        string    `json:"status"`
 	BookedAt      time.Time `json:"booked_at"`
 }
 
