@@ -19,6 +19,7 @@ create table if not exists conferences(
     total_tickets int not null check(total_tickets > 0),
     available_tickets int not null check(available_tickets >= 0),
     organizer_id int not null references users(id) on delete cascade,
+    status text not null default 'ongoing' check (status in ('ongoing', 'completed', 'cancelled')),
     created_at timestamptz not null default now()
 );
 
@@ -28,6 +29,7 @@ create table if not exists bookings (
     user_id int not null references users(id) on delete cascade,
     conference_id int not null references conferences(id) on delete cascade,
     tickets_booked int not null check(tickets_booked > 0),
+    status text not null default 'completed' check (status in ('completed', 'failed', 'cancelled')),
     booked_at timestamptz not null default now()
 );
 
