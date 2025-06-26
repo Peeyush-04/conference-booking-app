@@ -10,6 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// universal mehtod
 func CreateUser(ctx context.Context, db *pgxpool.Pool, user models.User, rawPassword string) (uint32, error) {
 	// hash password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(rawPassword), bcrypt.DefaultCost)
@@ -36,6 +37,7 @@ func CreateUser(ctx context.Context, db *pgxpool.Pool, user models.User, rawPass
 	return userID, err
 }
 
+// only performed by organizer
 func CreateConference(ctx context.Context, db *pgxpool.Pool, conference *models.Conference) (uint32, error) {
 	query := `
 		INSERT INTO conferences (
@@ -61,6 +63,7 @@ func CreateConference(ctx context.Context, db *pgxpool.Pool, conference *models.
 	return conferenceID, err
 }
 
+// performed by customer
 func CreateBooking(ctx context.Context, db *pgxpool.Pool, booking models.Booking) (uint32, error) {
 	// queries
 	getQuery := `
@@ -129,6 +132,7 @@ func CreateBooking(ctx context.Context, db *pgxpool.Pool, booking models.Booking
 	return bookingID, nil
 }
 
+// service method
 func GenerateTickets(ctx context.Context, db *pgxpool.Pool, bookingID uint32) error {
 	// queries
 	getQuery := `
