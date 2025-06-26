@@ -4,6 +4,7 @@ import (
 	"backend/models"
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"golang.org/x/crypto/bcrypt"
@@ -126,4 +127,45 @@ func CreateBooking(ctx context.Context, db *pgxpool.Pool, booking models.Booking
 	}
 
 	return bookingID, nil
+}
+
+func GenerateTickets(ctx context.Context, db *pgxpool.Pool, bookingID uint32) error {
+	// queries
+	getQuery := `
+		SELECT tickets_booked FROM bookings WHERE id = $1
+	`
+	insertQuery := `
+		INSERT INTO tickets (booking_id, ticket_code)
+		VALUES ($1, $2)
+	`
+
+	// begin transaction
+	tx, err := db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	// fetch ticket count
+	var ticketCount uint32
+	err = tx.QueryRow(ctx, getQuery, bookingID).Scan(&ticketCount)
+	if err != nil {
+		return err
+	}
+
+	// insert tickets
+	for i := 0; i < int(ticketCount); i++ {
+		ticketCode := fmt.Sprintf("TCKT-%d-%d", bookingID, time.Now().UnixNano()+int64(i))
+		_, err = tx.Exec(ctx, insertQuery, bookingID, ticketCode)
+		if err != nil {
+			return err
+		}
+	}
+
+	// commit transaction
+	err = tx.Commit(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
 }
