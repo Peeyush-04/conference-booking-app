@@ -2,12 +2,19 @@ package auth
 
 import (
 	"errors"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 )
 
-var jwtSecret = []byte("key")
+func getJWTSecret() []byte {
+	secret := os.Getenv("JWTSECRET")
+	if secret == "" {
+		panic("JWTSECRET not set in environment")
+	}
+	return []byte(secret)
+}
 
 // generate jwt for signed token for a user
 func GenerateJWT(userID uint32, role string) (string, error) {
@@ -18,7 +25,7 @@ func GenerateJWT(userID uint32, role string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString(getJWTSecret())
 }
 
 // validats signed jwt
@@ -30,7 +37,7 @@ func ValidateJWT(tokenString string) (*jwt.Token, error) {
 			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, errors.New("unexpected signing method")
 			}
-			return jwtSecret, nil
+			return getJWTSecret(), nil
 		})
 
 	if err != nil || !token.Valid {
