@@ -11,8 +11,8 @@ import (
 type contextKey string
 
 const (
-	userIDKey contextKey = "user_id"
-	roleKey   contextKey = "role"
+	UserIDKey contextKey = "user_id"
+	RoleKey   contextKey = "role"
 )
 
 // checks and validates from auth header
@@ -41,8 +41,8 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		// attach user id and role to request context
-		ctx := context.WithValue(r.Context(), userIDKey, userID)
-		ctx = context.WithValue(ctx, roleKey, role)
+		ctx := context.WithValue(r.Context(), UserIDKey, userID)
+		ctx = context.WithValue(ctx, RoleKey, role)
 
 		// call next handler with new context
 		next.ServeHTTP(w, r.WithContext(ctx))
