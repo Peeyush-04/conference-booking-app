@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"backend/middleware"
 	"backend/models"
 	"backend/query"
 	"encoding/json"
@@ -22,11 +23,13 @@ func NewConferenceHandler(db *pgxpool.Pool) *ConferenceHandler {
 
 func (h *ConferenceHandler) RegisterRoutes(r chi.Router) {
 	r.Route("/conference", func(r chi.Router) {
-		r.Post("/", h.CreateConference)              // organizer only
-		r.Get("/upcoming", h.GetUpcomingConferences) // public
-		r.Get("/{id}", h.GetConferenceByID)          // public
-		r.Put("/{id}", h.UpdateConference)           // organizer only
-		r.Delete("/{id}", h.DeleteConference)        // organizer only
+		r.Use(middleware.JWTAuthMiddleware)
+
+		r.With(middleware.JWTAuthMiddleware).Post("/", h.CreateConference)       // organizer only
+		r.Get("/upcoming", h.GetUpcomingConferences)                             // public
+		r.Get("/{id}", h.GetConferenceByID)                                      // public
+		r.With(middleware.JWTAuthMiddleware).Put("/{id}", h.UpdateConference)    // organizer only
+		r.With(middleware.JWTAuthMiddleware).Delete("/{id}", h.DeleteConference) // organizer only
 	})
 }
 
@@ -41,8 +44,8 @@ func (h *ConferenceHandler) CreateConference(w http.ResponseWriter, r *http.Requ
 	}
 
 	// fetch user id and role from context
-	userIDVal := r.Context().Value("user_id")
-	roleVal := r.Context().Value("role")
+	userIDVal := r.Context().Value(middleware.UserIDKey)
+	roleVal := r.Context().Value(middleware.RoleKey)
 
 	// validate context presence
 	userID, ok1 := userIDVal.(uint32)
@@ -75,6 +78,7 @@ func (h *ConferenceHandler) CreateConference(w http.ResponseWriter, r *http.Requ
 		TotalTickets:     req.TotalTickets,
 		AvailableTickets: req.TotalTickets,
 		OrganizerID:      userID,
+		Status:           "ongoing",
 	}
 
 	conferenceID, err := query.CreateConference(r.Context(), h.DB, &conference)
@@ -155,8 +159,8 @@ func (h *ConferenceHandler) UpdateConference(w http.ResponseWriter, r *http.Requ
 	}
 
 	// extract user id and role
-	userID, ok1 := r.Context().Value("user_id").(uint32)
-	role, ok2 := r.Context().Value("role").(string)
+	userID, ok1 := r.Context().Value(middleware.UserIDKey).(uint32)
+	role, ok2 := r.Context().Value(middleware.RoleKey).(string)
 	if !ok1 || !ok2 || role != "organizer" {
 		http.Error(w, notOrganizerError, http.StatusUnauthorized)
 		return

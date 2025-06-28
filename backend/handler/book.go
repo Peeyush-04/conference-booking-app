@@ -46,7 +46,7 @@ func (h *BookingHandler) CreateBooking(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user ID from context
-	userIDVal := r.Context().Value("user_id")
+	userIDVal := r.Context().Value(middleware.UserIDKey)
 	userID, ok := userIDVal.(uint32)
 	if !ok {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -98,8 +98,8 @@ func (h *BookingHandler) GetBooking(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// fetch user identity from JWT claims
-	userID, ok1 := r.Context().Value("user_id").(uint32)
-	role, ok2 := r.Context().Value("role").(string)
+	userID, ok1 := r.Context().Value(middleware.UserIDKey).(uint32)
+	role, ok2 := r.Context().Value(middleware.RoleKey).(string)
 
 	if !ok1 || !ok2 {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -143,7 +143,7 @@ func (h *BookingHandler) UpdateBooking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID, ok := r.Context().Value("user_id").(uint32)
+	userID, ok := r.Context().Value(middleware.UserIDKey).(uint32)
 	if !ok || booking.UserID != userID {
 		http.Error(w, bookingAuthError, http.StatusForbidden)
 		return
@@ -182,7 +182,7 @@ func (h *BookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// extract id from JWT claims
-	userID, ok := r.Context().Value("user_id").(uint32)
+	userID, ok := r.Context().Value(middleware.UserIDKey).(uint32)
 	if !ok {
 		http.Error(w, "Unauthorized", http.StatusForbidden)
 		return

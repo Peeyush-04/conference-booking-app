@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"backend/middleware"
 	"backend/query"
 	"encoding/json"
 	"net/http"
@@ -35,7 +36,7 @@ func (h *TicketHandler) GetTicketsByBookingID(w http.ResponseWriter, r *http.Req
 	}
 
 	// get user id from JWT claims
-	userID, ok := r.Context().Value("user_id").(uint32)
+	userID, ok := r.Context().Value(middleware.UserIDKey).(uint32)
 	if !ok {
 		http.Error(w, "Unauthorized", http.StatusForbidden)
 		return
