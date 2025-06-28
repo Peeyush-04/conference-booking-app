@@ -158,7 +158,7 @@ func GetUpcomingConferences(ctx context.Context, db *pgxpool.Pool, days int) ([]
 	getQuery := `
 		SELECT id, title, description, location, event_time, total_tickets, available_tickets, organizer_id, status
 		FROM conferences
-		WHERE event_time BETWEEN NOW() AND NOW() + ($1 || 'days')::interval;
+		WHERE event_time BETWEEN NOW() AND NOW() + ($1 * INTERVAL '1 day');
 	`
 
 	// fetches available conferences
