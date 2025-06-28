@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    container_name: go-backend
+    env_file:
+      - .env
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+      JWTSECRET: ${JWTSECRET} # help: use this command in terminal => openssl rand -hex 32
+      DATABASE_URL: ${DATABASE_URL} # format: postgres://DB_USER:DB_PASSWORD@postgres:5432/bookingDB
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
+  
+  # frontend:
+  #   build: 
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.frontend
+  #   container_name: react-frontend
+  #   environment:
+  #     - NODE_ENV=development
+  #   ports:
+  #     - "5173:5173"
+  #   depends_on:
+  #     - backend
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
