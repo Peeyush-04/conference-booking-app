@@ -32,7 +32,7 @@ func GenerateJWT(userID uint32, role string) (string, error) {
 func ValidateJWT(tokenString string) (*jwt.Token, error) {
 	// parses jwt
 	token, err := jwt.Parse(tokenString,
-		func(t *jwt.Token) (interface{}, error) {
+		func(t *jwt.Token) (any, error) {
 			// ensure algorithm is HMAC
 			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, errors.New("unexpected signing method")

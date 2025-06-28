@@ -46,6 +46,7 @@ func GetUserByEmail(ctx context.Context, db *pgxpool.Pool, email string) (*model
 	// fetches from DB
 	var user models.User
 	err := db.QueryRow(ctx, getQuery, email).Scan(
+		&user.ID,
 		&user.FirstName,
 		&user.LastName,
 		&user.Email,
