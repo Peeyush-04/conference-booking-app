@@ -34,6 +34,32 @@ func GetUserByID(ctx context.Context, db *pgxpool.Pool, userID uint32) (*models.
 	return &user, nil
 }
 
+// fetches user by email
+func GetUserByEmail(ctx context.Context, db *pgxpool.Pool, email string) (*models.User, error) {
+	// query
+	getQuery := `
+		SELECT id, first_name, last_name, email, role, password_hash, created_at
+		FROM users
+		WHERE email = $1;
+	`
+
+	// fetches from DB
+	var user models.User
+	err := db.QueryRow(ctx, getQuery, email).Scan(
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.Role,
+		&user.PasswordHash,
+		&user.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 // fetch conference by conference id
 func GetConferenceByID(ctx context.Context, db *pgxpool.Pool, conferenceID uint32) (*models.Conference, error) {
 	// query
