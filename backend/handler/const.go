@@ -18,6 +18,21 @@ const (
 	conferenceIDError       string = "Invalid conference ID"
 	conferenceNotFoundError string = "Conference not found"
 	updateConferenceError   string = "Error updating conference: "
+	deleteConferenceError   string = "Failed to delete conference: "
+	conferenceAuthError     string = "Unauthorized: Not your conference"
+)
+
+// booking error
+const (
+	bookingIDError     string = "Invalid booking ID"
+	bookingError       string = "Booking not found"
+	bookingAuthError   string = "Unauthorized: Not your booking"
+	bookingAccessError string = "Access denied: not your booking"
+)
+
+// ticket error
+const (
+	fetchTicketsError string = "Failed to fetch tickets"
 )
 
 // JSON related errors: includes json, jwt

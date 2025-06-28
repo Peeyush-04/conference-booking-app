@@ -29,7 +29,7 @@ type updateUserRequest struct {
 
 // includes register routes in UserHandler function
 func (h *UserHandler) RegisterRoutes(r chi.Router) {
-	r.Route("/users", func(r chi.Router) {
+	r.Route("/user", func(r chi.Router) {
 		r.Get("/{id}", h.GetUser)
 		r.Put("/{id}", h.UpdateUser)
 		r.Delete("/{id}", h.DeleteUser)

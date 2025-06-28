@@ -5,6 +5,7 @@ import (
 	"backend/models"
 	"backend/query"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -14,6 +15,10 @@ import (
 
 type AuthHandler struct {
 	DB *pgxpool.Pool
+}
+
+func NewAuthHandler(db *pgxpool.Pool) *AuthHandler {
+	return &AuthHandler{DB: db}
 }
 
 // routes for register, login
@@ -58,6 +63,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	// create user in DB
 	userID, err := query.CreateUser(r.Context(), h.DB, user, req.Password)
 	if err != nil {
+		log.Println("CreateUser error:", err)
 		http.Error(w, createUserError, http.StatusInternalServerError)
 		return
 	}
