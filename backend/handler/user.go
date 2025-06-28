@@ -12,13 +12,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-var (
-	invalidUserError    string = "Invalid user ID"
-	userError           string = "User not found"
-	internalServerError string = "Internal server error"
-	invalidJSONRequest  string = "Invalid JSON request"
-)
-
 type UserHandler struct {
 	DB *pgxpool.Pool
 }
