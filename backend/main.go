@@ -12,16 +12,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	// fetch .env variables
-	err := godotenv.Load("../.env")
-	if err != nil {
-		log.Println("No .env file found or failed to load it")
-	}
-
 	// Connect to PostgreSQL
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
