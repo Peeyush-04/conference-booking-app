@@ -34,8 +34,8 @@ func main() {
 	r.Use(middleware.RecoverMiddleware)
 	r.Use(middleware.LoggingMiddleware)
 	r.Use(middleware.RequestIDMiddleware)
-	r.Use(middleware.RateLimitMiddleware)
 	r.Use(middleware.CORSMiddleware)
+	r.Use(middleware.RateLimitMiddleware)
 
 	// Register Handlers
 	handler.NewUserHandler(dbpool).RegisterRoutes(r)
