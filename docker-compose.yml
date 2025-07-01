@@ -26,7 +26,7 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
       JWTSECRET: ${JWTSECRET} # help: use this command in terminal => openssl rand -hex 32
-      DATABASE_URL: ${DATABASE_URL} # format: postgres://DB_USER:DB_PASSWORD@postgres:5432/bookingDB
+      DATABASE_URL: ${DATABASE_URL} # format: postgres://DB_USER:DB_PASSWORD@DB_HOST:5432/DB_NAME
     ports:
       - "8080:8080"
     depends_on:
